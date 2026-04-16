@@ -7,15 +7,11 @@ import './globals.css';
 const geist = Geist({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Quran App',
-  description: 'Read and search the Holy Quran',
+  title: 'Quran App — Read & Search',
+  description: 'Read and search the Holy Quran with Arabic text and English translation',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -29,7 +25,7 @@ export default function RootLayout({
       <body className={geist.className}>
         <SettingsProvider>
           <Navbar />
-          <main className="max-w-5xl mx-auto px-4 py-8">
+          <main className="max-w-3xl mx-auto px-4 py-8">
             {children}
           </main>
         </SettingsProvider>

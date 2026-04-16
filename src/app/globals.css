@@ -1,17 +1,13 @@
 @import "tailwindcss";
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: #f8f7f4;
+  color: #1f2937;
   min-height: 100vh;
+  font-family: inherit;
+  -webkit-font-smoothing: antialiased;
 }
