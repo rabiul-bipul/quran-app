@@ -1,44 +1,36 @@
-import { Surah, SurahMeta, Ayah, SearchResult } from '@/types/quran';
+import type {
+  Ayah,
+  RawSurah,
+  SearchResult,
+  Surah,
+  SurahMeta,
+} from "@/types/quran";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const quranArabic = require('../../data/quran.json') as Record<string, unknown>[];
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const quranEnglish = require('../../data/quran_en.json') as Record<string, unknown>[];
+const rawData: RawSurah[] = require("../../data/quran_en.json");
 
-// Cache merged data at module level — only built once
+// Module-level cache — built once, reused forever
 let cachedSurahs: Surah[] | null = null;
 
 function buildSurahs(): Surah[] {
   if (cachedSurahs) return cachedSurahs;
 
-  cachedSurahs = quranArabic.map((surahAr, index) => {
-    const surahEn = quranEnglish[index] as {
-      id: number;
-      name: string;
-      transliteration: string;
-      translation: string;
-      type: string;
-      total_verses: number;
-      verses: { id: number; text: string }[];
-    };
-
-    const arabicVerses = (surahAr as { verses: { id: number; text: string }[] }).verses;
-
-    const ayahs: Ayah[] = arabicVerses.map((verse, vIndex) => ({
-      id: vIndex + 1,
-      surah: surahEn.id,
-      numberInSurah: vIndex + 1,
+  cachedSurahs = rawData.map((raw: RawSurah): Surah => {
+    const ayahs: Ayah[] = raw.verses.map((verse, index) => ({
+      id: verse.id,
+      surahId: raw.id,
+      numberInSurah: index + 1,
       arabic: verse.text,
-      translation: surahEn.verses[vIndex]?.text ?? '',
+      translation: verse.translation,
     }));
 
     return {
-      id: surahEn.id,
-      name: surahEn.name,
-      transliteration: surahEn.transliteration,
-      translation: surahEn.translation,
-      type: surahEn.type as 'meccan' | 'medinan',
-      totalAyahs: surahEn.total_verses,
+      id: raw.id,
+      name: raw.name,
+      transliteration: raw.transliteration,
+      translation: raw.translation,
+      type: raw.type,
+      totalAyahs: raw.total_verses,
       ayahs,
     };
   });
@@ -74,6 +66,7 @@ export function searchAyahs(query: string): SearchResult[] {
       if (ayah.translation.toLowerCase().includes(normalized)) {
         results.push({
           ayah,
+          surahId: surah.id,
           surahName: surah.name,
           surahTransliteration: surah.transliteration,
         });
@@ -81,5 +74,6 @@ export function searchAyahs(query: string): SearchResult[] {
     }
   }
 
-  return results.slice(0, 50); // limit to 50 results
+  // Limit to 50 results to keep UI fast
+  return results.slice(0, 50);
 }
