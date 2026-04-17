@@ -156,7 +156,7 @@ Quran data is sourced from the [`quran-json`](https://github.com/risan/quran-jso
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available.
 
 ---
 
